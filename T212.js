@@ -1,21 +1,25 @@
-// Trading212 CFD nie posiada zwyklego eksportu raportu i nalezy go wygenrowac w ponizszy sposob:
-// !!Koniecznie nie uruchamiaj skryptu kilkukrotnie w przeciagu kilku minut! Moze to skutkowac blokada dostepu do Trading212 na okolo 5min.
-// 1. Otworz Chrome lub Firefox
-// 2. Zaloguj sie do Trading212
-// 3. Przejdz na konto CFD. Czasmi konieczne jest przejscie do wyszukiwarki instrumentow CFD, przyczyna nie jest nam znana.
-// 4. Otworz "Developers Tools" w Firefox lub "DevTools" w Chrome przy pomocy przycisku F12.
-// 5. Przejdz na zakladke "Console"/"Konsola" w Firefox/Chrome
-// 6. Wklej caly ponizszy tekst i kliknij ENTER/Uruchom
-// 6a. Przegladarka moze Cie poprosic o dodatkowa weryfikacje upewniajaca sie, ze chcesz uruchomic zewnetrzny skrypt
-// 7. Na stronie t212 w której wkleiłeś skrypt pojawi się okno z zapytaniem od kiedy chcesz pobrac dane wpisz date w formacie RRRR-MM-DD
-// 7a. Na stronie t212 w której wkleiłeś skrypt pojawi się okno z zapytaniem do kiedy chcesz pobrac dane wpisz date w formacie RRRR-MM-DD
-// 8. Po okolo 30 wyświetli się komunikat o tym, ile udało pobrać się rekorduów kliknij ok. i powinien zostac pobrany plik 'Trading212_CFD.json'.
-// 9. Wczytaj go na naszej platformie
-// 10. Powodzenia!
+/*
+Trading212 CFD nie posiada zwyklego eksportu raportu i nalezy go wygenrowac w ponizszy sposob:
+ !!Koniecznie nie uruchamiaj skryptu kilkukrotnie w przeciagu kilku minut! Moze to skutkowac blokada dostepu do Trading212 na okolo 5min.
+1. Otworz Chrome lub Firefox
+2. Zaloguj sie do Trading212
+3. Przejdz na konto CFD. Czasmi konieczne jest przejscie do wyszukiwarki instrumentow CFD, przyczyna nie jest nam znana.
+4. Otworz "Developers Tools" w Firefox lub "DevTools" w Chrome przy pomocy przycisku F12.
+5. Przejdz na zakladke "Console"/"Konsola" w Firefox/Chrome
+6. Wklej caly ponizszy tekst i kliknij ENTER/Uruchom
+6a. Przegladarka moze Cie poprosic o dodatkowa weryfikacje upewniajaca sie, ze chcesz uruchomic zewnetrzny skrypt
+7. Na stronie t212 w której wkleiłeś skrypt pojawi się okno z zapytaniem od kiedy chcesz pobrac dane wpisz date w formacie RRRR-MM-DD
+7a. Na stronie t212 w której wkleiłeś skrypt pojawi się okno z zapytaniem do kiedy chcesz pobrac dane wpisz date w formacie RRRR-MM-DD
+8. Po okolo 30 wyświetli się komunikat o tym, ile udało pobrać się rekorduów kliknij ok. i powinien zostac pobrany plik 'Trading212_CFD.json'.
+9. Wczytaj go na naszej platformie
+10. Powodzenia!
 
-//source code https://github.com/DarkSpine433/T212-CFD-DATA/
+source code https://github.com/DarkSpine433/T212-CFD-DATA/ 
+
+*/
+
 async function getData() {
-  // 1. Pobieranie dat
+  /*---  1. Pobieranie dat ---*/
   let fromDateStr = prompt(
     "Wpisz datę OD której ma wziąć dane (format RRRR-MM-DD):",
     `${new Date().getFullYear() - 1}-01-01`,
@@ -33,7 +37,9 @@ async function getData() {
   let requestBase = `https://live.trading212.com/rest/reports/`;
   let requestFilter = `&perPage=20&from=${fromDateStr}&to=${toDateStr}`;
 
-  // 2. Mechanizm autoryzacji (Fix na błąd 401)
+  {
+    /*---  2. Mechanizm autoryzacji (Fix na błąd 401) ---*/
+  }
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -57,7 +63,9 @@ async function getData() {
     "background: #222; color: #bada55",
   );
 
-  // --- CZĘŚĆ 1: POZYCJE ---
+  {
+    /*---  CZĘŚĆ 1: POZYCJE ---*/
+  }
   let positionDetails = [];
   try {
     let res = await (
@@ -75,7 +83,6 @@ async function getData() {
         for (let pos of pageRes.data) {
           await new Promise((r) => setTimeout(r, 50));
 
-          // Pobieramy szczegóły (historię zdarzeń dla pozycji)
           let details = await (
             await fetch(requestBase + pos.orderNumber.link, auth)
           ).json();
@@ -109,7 +116,7 @@ async function getData() {
     alert("Wystąpił błąd przy pobieraniu pozycji. Sprawdź konsolę.");
   }
 
-  // --- CZĘŚĆ 2: OPŁATY (OVERNIGHT FEES) ---
+  /*--- CZĘŚĆ 2: OPŁATY (OVERNIGHT FEES) ---*/
   let feeDetails = [];
   try {
     let feeUrl = `https://live.trading212.com/rest/reports/overnight-holding-fee`;
@@ -148,7 +155,7 @@ async function getData() {
     console.error("Błąd przy opłatach:", e);
   }
 
-  // --- CZĘŚĆ 3: EKSPORT ---
+  /*--- CZĘŚĆ 3: EKSPORT ---*/
   let combinedData = [...positionDetails, ...feeDetails];
   combinedData.sort((a, b) => new Date(a.time) - new Date(b.time));
 
@@ -163,4 +170,4 @@ async function getData() {
   alert(`Gotowe! Pobrano ${combinedData.length} rekordów (Pozycje + Opłaty).`);
 }
 
-getData();
+export { getData };
