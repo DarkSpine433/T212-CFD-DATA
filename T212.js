@@ -58,10 +58,7 @@ async function getData() {
     credentials: "include",
   };
 
-  console.log(
-    `%c Rozpoczynam pobieranie: ${fromDateStr} - ${toDateStr}`,
-    "background: #222; color: #bada55",
-  );
+  console.log(`%c Rozpoczynam pobieranie: ${fromDateStr} - ${toDateStr}`);
 
   {
     /*---  CZĘŚĆ 1: POZYCJE ---*/
