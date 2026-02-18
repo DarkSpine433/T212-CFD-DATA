@@ -190,7 +190,16 @@
         margin-bottom: 20px;
         text-align: left;
       }
-
+      .info-box {
+        background: rgba(88, 166, 255, 0.1);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        padding: 15px;
+        border-radius: 10px;
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+        text-align: left;
+      }
       .attribution-card {
         background: var(--card-bg);
         border: 1px solid var(--border);
@@ -266,6 +275,11 @@
 
     <div class="container">
       <main class="tool-card">
+        <div class="info-box">
+          ℹ️ <b>INFO:</b>: Ostatnia aktualizacja kodu: <b class="date"></b>.
+          <br />Jeśli Twoja zapisana zakładka posiada starszą datę, usuń ją i
+          dodaj ponownie, aby korzystać z najnowszych poprawek i funkcji.
+        </div>
         <div class="warning-box">
           ⚠️ <b>WAŻNE:</b> Nie uruchamiaj skryptu kilkukrotnie w ciągu kilku
           minut! Może to skutkować blokadą dostępu do Trading212 na około 5
@@ -278,8 +292,8 @@
           <h3>Krok 1: Dodawanie zakładki</h3>
           <p>Przeciągnij przycisk na pasek zakładek.</p>
           <a id="t212-bookmarklet" href="#" class="bookmark-btn"
-            >🚀 T212 Export Tool</a
-          >
+            >🚀 T212 Export Tool | <b class="date"></b>
+          </a>
           <p
             style="
               margin-top: 15px;
@@ -319,7 +333,7 @@
               Trading212.
             </li>
             <li>
-              kliknij w zakładkę <b>🚀 T212 Export Tool</b> na pasku zakładek.
+              kliknij w zakładkę <b>🚀 T212 Export Tool </b> na pasku zakładek.
               Będąc na stronie Trading212
             </li>
             <li>
@@ -548,6 +562,9 @@
 
     <script type="module">
       import { getData } from "./T212.js";
+      document
+        .querySelectorAll(".date")
+        .forEach((el) => (el.textContent = "17.02.2025"));
 
       // Przygotowanie kodu pod Bookmarklet i Pre
       const rawCode = `javascript:(${getData.toString()})();`;
