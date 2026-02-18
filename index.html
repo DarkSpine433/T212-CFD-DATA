@@ -568,16 +568,16 @@
         .querySelectorAll(".date")
         .forEach((el) => (el.textContent = "17.02.2025"));
 
-      // Przygotowanie kodu pod Bookmarklet i Pre
+
       const rawCode = `javascript:(${getData.toString()})();`;
 
-      // Ustawienie przycisku
+
       document.getElementById("t212-bookmarklet").href = rawCode;
 
-      // Ustawienie tekstu w PRE
+
       document.getElementById("raw-code-input").textContent = rawCode;
 
-      // NAPRAWIONA FUNKCJA KOPIOWANIA
+
       window.copyRawCode = async function () {
         const codeText = document.getElementById("raw-code-input").textContent;
         try {
