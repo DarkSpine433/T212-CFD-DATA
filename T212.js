@@ -107,6 +107,7 @@ async function getData() {
   } catch (e) {
     console.error("Błąd przy pozycjach:", e);
     alert("Wystąpił błąd przy pobieraniu pozycji. Sprawdź konsolę.");
+    return;
   }
 
   /*--- CZĘŚĆ 2: OPŁATY (OVERNIGHT FEES) ---*/
@@ -146,6 +147,8 @@ async function getData() {
     }
   } catch (e) {
     console.error("Błąd przy opłatach:", e);
+    alert("Wystąpił błąd przy pobieraniu opłat. Sprawdź konsolę.", e);
+    return;
   }
 
   /*--- CZĘŚĆ 3: EKSPORT ---*/
