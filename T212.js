@@ -37,9 +37,7 @@ async function getData() {
   let requestBase = `https://live.trading212.com/rest/reports/`;
   let requestFilter = `&perPage=20&from=${fromDateStr}&to=${toDateStr}`;
 
-  {
-    /*---  2. Mechanizm autoryzacji (Fix na błąd 401) ---*/
-  }
+  /*---  2. Mechanizm autoryzacji (Fix na błąd 401) ---*/
   const getCookie = (name) => {
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
@@ -60,9 +58,7 @@ async function getData() {
 
   console.log(`%c Rozpoczynam pobieranie: ${fromDateStr} - ${toDateStr}`);
 
-  {
-    /*---  CZĘŚĆ 1: POZYCJE ---*/
-  }
+  /*---  CZĘŚĆ 1: POZYCJE ---*/
   let positionDetails = [];
   try {
     let res = await (
