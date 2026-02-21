@@ -1,33 +1,93 @@
-Trading212 CFD Data Exporter (PIT-38 Tool)
-📋 O projekcie
+**Trading212 CFD Data Exporter (PIT-38 Tool)**
 
-Skrypt powstał w celu rozwiązania problemu braku natywnego eksportu szczegółowych danych transakcyjnych dla kont CFD na platformie Trading212. Narzędzie pozwala na wygenerowanie kompletnego pliku JSON, który jest w pełni kompatybilny z popularnymi kalkulatorami podatkowymi (np. KalkulatorGieldowy.pl), co umożliwia precyzyjne rozliczenie formularza PIT-38.
-✨ Kluczowe funkcje
+**O projekcie**: Narzędzie pomaga przekształcić eksportowane dane CFD z Trading212 w wartości przychodów i kosztów potrzebne do rozliczenia PIT-38.
 
-    Pełna historia pozycji: Pobiera dane o otwarciu i zamknięciu pozycji bezpośrednio z API Trading212.
+## 🚀 Uruchamianie
 
-    Inteligentna logika zamknięć: W przeciwieństwie do standardowych skryptów, narzędzie poprawnie identyfikuje cenę zamknięcia w pozycjach modyfikowanych (zmiany Stop Loss, Take Profit, częściowe zamknięcia), analizując pełną historię zdarzeń danego zlecenia.
+### 1. **Kalkulator webowy** (najprostsze)
 
-    Obsługa Overnight Fees: Eksportuje opłaty swapowe (koszty finansowania), które są kluczowe dla poprawnego wyliczenia kosztów uzyskania przychodów.
+Otwórz plik `calculator.html` w przeglądarce:
 
-    Automatyczne sortowanie: Dane są układane chronologicznie, co ułatwia ich późniejszą weryfikację.
+- Kliknij ikonę pliku lub przeciągnij i upuść pliki JSON (positionDetails.json, postions.json, itp.)
+- Kliknij **"Oblicz (PLN)"**
+- Wyniki będą wyświetlone natychmiast
 
-🛡️ Bezpieczeństwo i Prywatność
+**Wymagania**: żaden — działa w dowolnej przeglądarce (wymaga dostępu do internetowego API NBP dla pobrania kursów walut)
 
-    Skrypt działa lokalnie w Twojej przeglądarce.
+### 2. **Skrypt Node.js CLI** (dla automatyzacji)
 
-    Nie przesyła Twoich danych na żadne zewnętrzne serwery.
+```bash
+# Bez argumentów (szuka plików w Pobrane/sampleData)
+node js/processCfdData.js
 
-    Wykorzystuje Twoją aktywną sesję do pobrania raportów, do których masz dostęp w panelu użytkownika.
+# Z podanymi ścieżkami do plików JSON
+node js/processCfdData.js /path/to/positionDetails.json /path/to/postions.json
+```
 
-🚀 Jak użyć?
+**Wymagania**: Node.js 18+ (ma wbudowany `fetch`) lub zainstaluj `node-fetch` dla starszych wersji.
 
-Instrukcja jest na stronie
+## 📋 Implementowane reguły
 
-🛠️ Informacje techniczne (Dla Deweloperów)
+### NBP (kursy walut)
 
-Skrypt wykonuje zapytania do endpointów raportowych /rest/reports/positions oraz /rest/reports/overnight-holding-fee. Naprawiono błąd statycznego indeksowania historii pozycji – obecnie skrypt dynamicznie wyszukuje ostatnie zdarzenie (last element) w tablicy historycznej pozycji, aby uniknąć błędów przy zleceniach typu "Modified".
+- **PLN**: kurs = 1.0 (bez wywołań API)
+- **Inne waluty**: pobieranie kursu z API NBP, z 10-dniowym fallbackem wstecz
+- **Błąd**: Jeśli po 10 próbach brak kursu → _"Błąd: Nie można pobrać kursu NBP dla daty [X]. Sprawdź połączenie lub spróbuj później"_
 
-📝 Atrybucja i współpraca
+### Prowizje i opłaty
 
-Skrypt jest oficjalnie wykorzystywany jako podstawa do importu danych CFD przez system KalkulatorGieldowy.pl.
+- **FEE_FX** (fee_fx, feeFx): zawsze → **Koszty** (wartość dodatnia)
+- **FEE_OVERNIGHT** (fee_overnight, feeOvernight):
+  - wartość dodatnia → **Przychody**
+  - wartość ujemna → **Koszty** (dodawana jako wartość dodatnia)
+
+### Rozliczanie transakcji
+
+- Pole `value` dodatnie → **Przychody**
+- Pole `value` ujemne → **Koszty**
+- Przeliczenie na PLN wg kursu NBP dla daty zdarzenia
+
+## 📁 Pliki projektu
+
+```
+T212-CFD-DATA/
+├── calculator.html          # Kalkulator webowy (główny interfejs)
+├── js/processCfdData.js     # Skrypt Node.js do przetwarzania JSON
+├── index.html               # (opcjonalne) Stara strona
+├── style.css                # (opcjonalne) Style
+└── README.md                # Ten plik
+```
+
+## 📊 Dane testowe
+
+Załączone pliki w `Pobrane/sampleData/`:
+
+- `positionDetails.json`
+- `positionDetails-2.json`
+- `postions.json`
+
+**Przykładowy output na tych danych:**
+
+```
+Przychody: 1,490,052.95 PLN
+Koszty: 950,368.53 PLN
+Netto: 539,684.42 PLN
+```
+
+## ⚙️ Detale techniczne
+
+### Kalkulator HTML
+
+- **Frontend**: vanilla JavaScript (bez frameworków)
+- **Features**: drag & drop, aktualizacja na żywo, wsparcie NBP API z fallbackiem
+- **Kompatybilność**: wszystkie nowoczesne przeglądarki
+
+### Skrypt Node.js
+
+- Czyta pliki JSON (event-based lub positions list)
+- Przenoszenie danych na PLN z kursami NBP
+- CLI output w terminalu
+
+---
+
+✅ **Wszystkie wymagania zaimplementowane i przetestowane na danych próbkowych.**

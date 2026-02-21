@@ -39,8 +39,7 @@ export const getInstruction = () => {
   return instruction;
 };
 
-async function getData() {
-  /*---  Pobieranie dat ---*/
+async function getData(getCurrencies = false) {
   const currencyList = [
     "PLN",
     "EUR",
@@ -55,6 +54,11 @@ async function getData() {
     "SEK",
     "CAD",
   ];
+  /*---  Pobieranie dat ---*/
+  if (getCurrencies) {
+    return currencyList;
+  }
+
   const accountCurrency = prompt(
     "Wpisz walute twojego konta Obsługiwane waluty znajdziesz w instrukcji:",
     "PLN",
@@ -116,7 +120,8 @@ async function getData() {
   let positionDetails = [];
   let interestDetails = [];
   let feeDetails = [];
-
+  let overalValue = 0;
+  let sumRawPnL = 0;
   /*---  POZYCJE ---*/
   try {
     let res = await (
@@ -155,44 +160,45 @@ async function getData() {
                 const closePrice = parseFloat(event.price);
                 const qty = parseFloat(event.quantity);
 
+                const parsedValue = parseFloat(event?.value);
+                const value = !isNaN(parsedValue) ? parsedValue : 0;
+
                 let pnl = (closePrice - currentAvgOpenPrice) * qty;
                 if (openDirection === "sell") {
                   pnl = (currentAvgOpenPrice - closePrice) * qty;
                 }
 
-                const closeValueInstrumentCurrency = qty * closePrice;
+                const calculatedFxFee = (Math.abs(pnl) * 0.005).toFixed(4);
+                const finalFxFee =
+                  position.currency !== accountCurrency
+                    ? parseFloat(calculatedFxFee)
+                    : 0;
 
-                const fxFee = (closeValueInstrumentCurrency * 0.005).toFixed(4);
-
-                if (
-                  parseFloat(fxFee) > 0 &&
-                  position.currency.toUpperCase() !==
-                    accountCurrency.toUpperCase()
-                ) {
+                if (finalFxFee > 0) {
                   feeDetails.push({
                     type: "FEE_FX",
                     time: event.time,
                     code: position.code,
                     currency: position.currency,
                     accountCurrency: accountCurrency,
-                    interest: fxFee,
+                    interest: -Math.abs(finalFxFee).toFixed(4),
                   });
                 }
 
                 positionDetails.push({
                   type: "POSITION",
-                  time: event.time, // Czas zamknięcia tej konkretnej transzy
+                  time: event.time,
                   openingTime: position.dateCreated,
                   code: position.code,
-                  orderName: event.eventNumber.name,
+                  orderName: event.eventNumber
+                    ? event.eventNumber.name
+                    : position.orderNumber.name,
                   currency: position.currency,
                   quantity: qty,
                   direction: openDirection,
-                  openDirection: openDirection,
-                  closeDirection: event.direction,
-                  price: event.price,
                   openPrice: currentAvgOpenPrice,
                   closePrice: closePrice,
+                  value: value,
                 });
               }
             }
@@ -332,7 +338,10 @@ async function getData() {
   /*--- EKSPORT ---*/
   const combinedData = [...positionDetails, ...feeDetails, ...interestDetails];
   combinedData.sort((a, b) => new Date(a.time) - new Date(b.time));
-
+  positionDetails.forEach((p) => {
+    if (p.pnl) sumRawPnL += parseFloat(p.pnl);
+    if (p.value) overalValue += parseFloat(p.value);
+  });
   const blob = new Blob([JSON.stringify(combinedData, null, 2)], {
     type: "application/json",
   });
@@ -341,7 +350,9 @@ async function getData() {
   a.download = `T212_CFD_${fromDateStr}_${toDateStr}.json`;
   a.click();
 
-  alert(`Gotowe! Pobrano ${combinedData.length} rekordów (Pozycje + Opłaty).`);
+  alert(
+    `Gotowe! Pobrano ${combinedData.length} rekordów (Pozycje + Opłaty).\nSuma wyniku (PnL): ${sumRawPnL.toFixed(2)} ${accountCurrency}\nCałkowita wartość obrotu: ${overalValue.toFixed(2)} ${accountCurrency}`,
+  );
 }
 
 export { getData };
