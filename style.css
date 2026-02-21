@@ -19,11 +19,12 @@
 body {
   font-family: "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   background: url(./logo.png);
-  background-size: 50%;
+  background-size: 20rem;
   background-color: black;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  background-blend-mode: hard-light;
   color: var(--text-main);
   margin: 0;
   line-height: 1.6;
@@ -273,7 +274,8 @@ pre#raw-code-input::-webkit-scrollbar-thumb {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #58a6ff, #bc8cff);
+  background: #0056b3;
+  padding: 2px;
   align-items: center;
   justify-content: center;
   display: flex;

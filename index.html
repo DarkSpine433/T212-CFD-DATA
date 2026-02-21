@@ -130,7 +130,7 @@
         <div class="step-box">
           <h3>Krok 1: Dodawanie zakładki</h3>
           <p style="margin-bottom: 20px;">Przeciągnij przycisk na pasek zakładek.</p>
-          <a id="t212-bookmarklet" href="#" class="bookmark-btn"
+          <a id="t212-bookmarklet" href="javascript:void(0)" class="bookmark-btn"
             >🚀 T212 Export Tool | <b class="date"></b>
           </a>
           <p
@@ -461,11 +461,11 @@
           .map((curr) => `<kbd>${curr}</kbd>`)
           .join(", ");
       });
-      const rawCode = `/*${getInstruction()}*/\n\njavascript:(${getData.toString()})();`;
+      const rawCode = `javascript:(${getData.toString()})();`;
 
       document.getElementById("t212-bookmarklet").href = rawCode;
 
-      document.getElementById("raw-code-input").textContent = rawCode;
+      document.getElementById("raw-code-input").textContent = `/*${getInstruction()}*/\n\n${rawCode}`;
 
       window.copyRawCode = async function () {
         const codeText = document.getElementById("raw-code-input").textContent;

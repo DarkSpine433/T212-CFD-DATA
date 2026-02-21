@@ -120,8 +120,7 @@ async function getData(getCurrencies = false) {
   let positionDetails = [];
   let interestDetails = [];
   let feeDetails = [];
-  let overalValue = 0;
-  let sumRawPnL = 0;
+
   /*---  POZYCJE ---*/
   try {
     let res = await (
@@ -156,7 +155,9 @@ async function getData(getCurrencies = false) {
                 actionType === "modified" && event.direction !== openDirection;
 
               if (isClosedAction || isPartialClose) {
-                const currentAvgOpenPrice = parseFloat(event.avgPrice);
+                const currentAvgOpenPrice = isPartialClose
+                  ? parseFloat(details[j - 1].avgPrice)
+                  : parseFloat(event.avgPrice);
                 const closePrice = parseFloat(event.price);
                 const qty = parseFloat(event.quantity);
 
@@ -195,6 +196,7 @@ async function getData(getCurrencies = false) {
                     : position.orderNumber.name,
                   currency: position.currency,
                   quantity: qty,
+
                   direction: openDirection,
                   openPrice: currentAvgOpenPrice,
                   closePrice: closePrice,
@@ -338,10 +340,7 @@ async function getData(getCurrencies = false) {
   /*--- EKSPORT ---*/
   const combinedData = [...positionDetails, ...feeDetails, ...interestDetails];
   combinedData.sort((a, b) => new Date(a.time) - new Date(b.time));
-  positionDetails.forEach((p) => {
-    if (p.pnl) sumRawPnL += parseFloat(p.pnl);
-    if (p.value) overalValue += parseFloat(p.value);
-  });
+
   const blob = new Blob([JSON.stringify(combinedData, null, 2)], {
     type: "application/json",
   });
@@ -350,9 +349,7 @@ async function getData(getCurrencies = false) {
   a.download = `T212_CFD_${fromDateStr}_${toDateStr}.json`;
   a.click();
 
-  alert(
-    `Gotowe! Pobrano ${combinedData.length} rekordów (Pozycje + Opłaty).\nSuma wyniku (PnL): ${sumRawPnL.toFixed(2)} ${accountCurrency}\nCałkowita wartość obrotu: ${overalValue.toFixed(2)} ${accountCurrency}`,
-  );
+  alert(`Gotowe! Pobrano ${combinedData.length} rekordów (Pozycje + Opłaty).`);
 }
 
 export { getData };

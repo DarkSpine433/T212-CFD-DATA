@@ -1,93 +1,76 @@
-**Trading212 CFD Data Exporter (PIT-38 Tool)**
+# 🚀 Trading212 CFD Data Exporter
 
-**O projekcie**: Narzędzie pomaga przekształcić eksportowane dane CFD z Trading212 w wartości przychodów i kosztów potrzebne do rozliczenia PIT-38.
+[![GitHub stars](https://img.shields.io/github/stars/DarkSpine433/T212-CFD-DATA?style=for-the-badge)](https://github.com/DarkSpine433/T212-CFD-DATA/stargazers)
+[![GitHub license](https://img.shields.io/github/license/DarkSpine433/T212-CFD-DATA?style=for-the-badge)](https://github.com/DarkSpine433/T212-CFD-DATA/blob/main/LICENSE)
 
-## 🚀 Uruchamianie
+Darmowe narzędzie open-source umożliwiające eksport szczegółowych danych transakcyjnych z konta **Trading212 CFD** do formatu JSON. Narzędzie zostało stworzone z myślą o inwestorach potrzebujących precyzyjnych danych do rozliczeń podatkowych (np. w Polsce do formularza **PIT-38**).
 
-### 1. **Kalkulator webowy** (najprostsze)
-
-Otwórz plik `calculator.html` w przeglądarce:
-
-- Kliknij ikonę pliku lub przeciągnij i upuść pliki JSON (positionDetails.json, postions.json, itp.)
-- Kliknij **"Oblicz (PLN)"**
-- Wyniki będą wyświetlone natychmiast
-
-**Wymagania**: żaden — działa w dowolnej przeglądarce (wymaga dostępu do internetowego API NBP dla pobrania kursów walut)
-
-### 2. **Skrypt Node.js CLI** (dla automatyzacji)
-
-```bash
-# Bez argumentów (szuka plików w Pobrane/sampleData)
-node js/processCfdData.js
-
-# Z podanymi ścieżkami do plików JSON
-node js/processCfdData.js /path/to/positionDetails.json /path/to/postions.json
-```
-
-**Wymagania**: Node.js 18+ (ma wbudowany `fetch`) lub zainstaluj `node-fetch` dla starszych wersji.
-
-## 📋 Implementowane reguły
-
-### NBP (kursy walut)
-
-- **PLN**: kurs = 1.0 (bez wywołań API)
-- **Inne waluty**: pobieranie kursu z API NBP, z 10-dniowym fallbackem wstecz
-- **Błąd**: Jeśli po 10 próbach brak kursu → _"Błąd: Nie można pobrać kursu NBP dla daty [X]. Sprawdź połączenie lub spróbuj później"_
-
-### Prowizje i opłaty
-
-- **FEE_FX** (fee_fx, feeFx): zawsze → **Koszty** (wartość dodatnia)
-- **FEE_OVERNIGHT** (fee_overnight, feeOvernight):
-  - wartość dodatnia → **Przychody**
-  - wartość ujemna → **Koszty** (dodawana jako wartość dodatnia)
-
-### Rozliczanie transakcji
-
-- Pole `value` dodatnie → **Przychody**
-- Pole `value` ujemne → **Koszty**
-- Przeliczenie na PLN wg kursu NBP dla daty zdarzenia
-
-## 📁 Pliki projektu
-
-```
-T212-CFD-DATA/
-├── calculator.html          # Kalkulator webowy (główny interfejs)
-├── js/processCfdData.js     # Skrypt Node.js do przetwarzania JSON
-├── index.html               # (opcjonalne) Stara strona
-├── style.css                # (opcjonalne) Style
-└── README.md                # Ten plik
-```
-
-## 📊 Dane testowe
-
-Załączone pliki w `Pobrane/sampleData/`:
-
-- `positionDetails.json`
-- `positionDetails-2.json`
-- `postions.json`
-
-**Przykładowy output na tych danych:**
-
-```
-Przychody: 1,490,052.95 PLN
-Koszty: 950,368.53 PLN
-Netto: 539,684.42 PLN
-```
-
-## ⚙️ Detale techniczne
-
-### Kalkulator HTML
-
-- **Frontend**: vanilla JavaScript (bez frameworków)
-- **Features**: drag & drop, aktualizacja na żywo, wsparcie NBP API z fallbackiem
-- **Kompatybilność**: wszystkie nowoczesne przeglądarki
-
-### Skrypt Node.js
-
-- Czyta pliki JSON (event-based lub positions list)
-- Przenoszenie danych na PLN z kursami NBP
-- CLI output w terminalu
+👉 **Strona narzędzia:** [darkspine433.github.io/T212-CFD-DATA/](https://darkspine433.github.io/T212-CFD-DATA/)
 
 ---
 
-✅ **Wszystkie wymagania zaimplementowane i przetestowane na danych próbkowych.**
+## ✨ Kluczowe Funkcje
+
+- **Eksport Pozycji:** Pobiera dane o zamkniętych i częściowo zamkniętych pozycjach CFD.
+- **Kalkulacja FX Fee:** Automatycznie wylicza koszty przewalutowania (0.5%) dla transakcji w walutach obcych.
+- **Odsetki od Gotówki:** Eksportuje dane o odsetkach naliczonych od niezainwestowanych środków (Interest on Cash v2).
+- **Opłaty Overnight:** Pobiera historię opłat za przetrzymywanie pozycji przez noc (Holding Fees).
+- **Zgodność z PIT-38:** Wygenerowany plik JSON jest zoptymalizowany pod kątem popularnych narzędzi podatkowych, takich jak [kalkulatorgieldowy.pl](https://kalkulatorgieldowy.pl).
+- **Bezpieczeństwo:** Skrypt działa w 100% lokalnie w przeglądarce. Twoje dane sesyjne i transakcyjne nie opuszczają Twojego komputera.
+
+---
+
+## 🛠️ Jak to działa?
+
+Trading212 nie oferuje bezpośredniego eksportu do JSON dla kont CFD w swoim interfejsie. To narzędzie wykorzystuje Twoją aktywną sesję w przeglądarce, aby bezpiecznie pobrać te dane bezpośrednio z oficjalnego API Trading212.
+
+### Metoda 1: Bookmarklet (Rekomendowana)
+
+1. Dodaj przycisk ze [strony głównej](https://darkspine433.github.io/T212-CFD-DATA/) do paska zakładek.
+2. Zaloguj się na Trading212 i przejdź na konto CFD.
+3. Kliknij zapisaną zakładkę i postępuj zgodnie z komunikatami.
+
+### Metoda 2: Konsola DevTools (Dla zaawansowanych / Mobile)
+
+1. Skopiuj kod ze strony.
+2. Na stronie Trading212 otwórz konsolę (`F12` -> Console).
+3. Wklej kod i naciśnij `Enter`.
+
+---
+
+## 🏗️ Struktura Projektu
+
+- `index.html`: Główna strona wizytówka z instrukcjami i generatorem kodu.
+- `style.css`: System projektowy (Premium Dark Design) zapewniający responsywność i estetykę.
+- `js/generatorJsonData.js`: Rdzeń aplikacji – logika komunikacji z API i przetwarzania danych.
+- `js/oldCode.js`: Archiwalna wersja skryptu.
+
+---
+
+## 🛡️ Bezpieczeństwo i Prywatność
+
+- **Kod Open Source:** Każdy może sprawdzić, co dokładnie robi skrypt przed jego uruchomieniem.
+- **Brak Serwera:** Narzędzie nie posiada backendu. Komunikacja odbywa się wyłącznie na linii Twoja Przeglądarka ↔ Trading212 API.
+- **Brak Przechowywania Danych:** Wygenerowane dane są zapisywane jako plik tymczasowy w pamięci RAM przeglądarki i natychmiast oferowane do pobrania na dysk.
+
+---
+
+## 👨‍💻 Kontrybucja
+
+Projekt jest rozwijany przez społeczność dla społeczności. Jeśli chcesz pomóc:
+
+1. Zrób Fork repozytorium.
+2. Wprowadź zmiany lub poprawki.
+3. Otwórz Pull Request.
+
+Wszystkie zgłoszenia błędów i propozycje funkcji (Issues) są mile widziane!
+
+---
+
+## ⚖️ Disclaimer
+
+Narzędzie jest udostępniane "tak jak jest" (as-is), bez żadnych gwarancji. Jako autor nie ponoszę odpowiedzialności za ewentualne błędy w obliczeniach lub konsekwencje podatkowe wynikające z użycia tych danych. Zawsze weryfikuj dane z oficjalnymi raportami PDF z Trading212.
+
+---
+
+**Autor:** Dawid Konopiaty ([@DarkSpine433](https://github.com/DarkSpine433))
