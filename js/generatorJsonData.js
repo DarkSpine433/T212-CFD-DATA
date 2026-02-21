@@ -1,4 +1,4 @@
-export const getInstruction = () => {
+const getInstruction = () => {
   const instruction = `
   ===========================================================
   🚀 TRADING 212 CFD DATA EXPORTER
@@ -54,11 +54,11 @@ async function getData(getCurrencies = false) {
     "SEK",
     "CAD",
   ];
-  /*---  Pobieranie dat ---*/
   if (getCurrencies) {
     return currencyList;
   }
 
+  /*---  Pobieranie dat ---*/
   const accountCurrency = prompt(
     "Wpisz walute twojego konta Obsługiwane waluty znajdziesz w instrukcji:",
     "PLN",
@@ -352,4 +352,4 @@ async function getData(getCurrencies = false) {
   alert(`Gotowe! Pobrano ${combinedData.length} rekordów (Pozycje + Opłaty).`);
 }
 
-export { getData };
+export { getData, getInstruction };

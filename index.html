@@ -461,9 +461,13 @@
           .map((curr) => `<kbd>${curr}</kbd>`)
           .join(", ");
       });
-      const rawCode = `javascript:(${getData.toString()})();`;
+      const rawCode = getData.toString();
 
-      document.getElementById("t212-bookmarklet").href = rawCode;
+
+      const bookmarkletCode = `javascript:(function(){(${rawCode})();})();`;
+      const encodedCode = encodeURI(bookmarkletCode);
+
+      document.getElementById("t212-bookmarklet").href = encodedCode;
 
       document.getElementById("raw-code-input").textContent = `/*${getInstruction()}*/\n\n${rawCode}`;
 
