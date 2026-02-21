@@ -213,7 +213,7 @@
         <hr style="margin: 40px 0 20px 0" />
         <hr style="margin: 40px 0 20px 0" />
         <div class="copy-section">
-          <h3>Opcja 2: Konsola DevTools (PC & Mobile)</h3>
+          <h3>Opcja 2: Konsola DevTools </h3>
           <p style="font-size: 0.9rem; color: var(--text-muted)">
             Skopiuj kod i wklej go w zakładce <b>Console</b> (F12) na stronie
             Trading212.
@@ -321,6 +321,20 @@
               text-align: left;
             "
           >
+          
+          <div class="code-wrapper">
+            <pre id="bookmarklet-code-input" style="text-align: left;white-space: pre-wrap;word-wrap: break-word;word-break: break-all; max-height: 100px; overflow-y: auto;">Ładowanie kodu...</pre>
+            <div class="copy-bar">
+              <span
+                id="copy-status"
+                style="color: var(--success); font-size: 0.8rem; opacity: 0"
+                >Skopiowano!</span
+              >
+              <button class="copy-btn" onclick="copyRawCode()">
+                Kopiuj kod skryptu
+              </button>
+            </div>
+          </div>
             <li>
               Skopiuj kod przyciskiem <b>"Kopiuj kod skryptu"</b> (sekcja
               powyżej).
@@ -469,7 +483,8 @@
 
       document.getElementById("t212-bookmarklet").href = encodedCode;
 
-      document.getElementById("raw-code-input").textContent = `/*${getInstruction()}*/\n\n${rawCode}`;
+      document.getElementById("raw-code-input").textContent = `/*${getInstruction()}*/\n\n${bookmarkletCode}`;
+       document.getElementById("bookmarklet-code-input").textContent = `${encodedCode}`;
 
       window.copyRawCode = async function () {
         const codeText = document.getElementById("raw-code-input").textContent;
