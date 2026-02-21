@@ -67,385 +67,424 @@
       <div class="grid-pattern"></div>
     </div>
 
-    <div class="app-container" style="max-width: 1024px; width: 100%; margin: 0 auto;">
-
-    <header class="p-4 transition-all" style="    margin-left: auto;
-        margin-right: auto;">
-      <div class="logo-badge" style="
-        display: inline-flex;
-        align-items: center;
-        background: var(--bg-card);
-        border: 1px solid var(--border);
-        padding: 8px 20px;
-        border-radius: 100px;
-        
-
-        backdrop-filter: blur(10px);
-        box-shadow: 0 0 20px var(--primary-glow);
-        animation: fadeInDown 0.6s ease-out;
-      ">
-        <span style="
-          font-size: 0.9rem;
-          font-weight: 700;
-          color: var(--accent);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-        ">🚀 Trading212 Tool</span>
-      </div>
-
-      <h1 class="text-gradient">CFD Data Exporter</h1>
-
-      <p class="subtitle p-2" style="max-width: 600px; margin: 0 auto; line-height: 1.8;">
-        Eksportuj transakcje CFD do formatu <kbd>JSON</kbd> w kilka sekund.
-        <br />
-        <span style="color: var(--text-muted); font-weight: 300; font-size: 0.95rem;">
-          Zoptymalizowane pod kątem polskich raportów podatkowych 
-          <strong style="color: var(--success); font-weight: 600;">PIT-38</strong>.
-        </span>
-      </p>
-
-      <hr style="max-width: 100px; margin: 20px auto 0px auto; opacity: 0.2;">
-    </header>
-
-    <div class="container"  style="margin: 0 auto;" >
-      <main class="tool-card">
-        <div class="info-box" style="padding: 10px; border-radius: 10px">
-          ℹ️ <b>INFO:</b>: Ostatnia aktualizacja kodu: <b class="date"></b>.
-          <br />Jeśli Twoja zapisana zakładka jest starsza, usuń ją i dodaj
-          ponownie. Możesz również skopiować aktualny kod z sekcji poniżej i
-          wkleić go w pole adresu istniejącej zakładki, aby cieszyć się
-          najnowszymi poprawkami.
-        </div>
+    <div
+      class="app-container"
+      style="max-width: 1024px; width: 100%; margin: 0 auto"
+    >
+      <header
+        class="p-4 transition-all"
+        style="margin-left: auto; margin-right: auto"
+      >
         <div
-          class="warning-box"
-          style="padding: 10px; margin-top: 10px; border-radius: 10px"
+          class="logo-badge"
+          style="
+            display: inline-flex;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 8px 20px;
+            border-radius: 100px;
+
+            box-shadow: 0 0 20px var(--primary-glow);
+            animation: fadeInDown 0.6s ease-out;
+          "
         >
-          ⚠️ <b>WAŻNE:</b> Nie uruchamiaj skryptu kilkukrotnie w ciągu kilku
-          minut! Może to skutkować blokadą dostępu do Trading212 na około 5
-          minut.
-        </div>
-        <h3 style="text-align: left; margin-top: 20px"> 0px auto
-          Opcja 1: Zakładka Bookmarklet (PC | Rekomendowany)
-        </h3>
-        <div class="step-box">
-          <h3>Krok 1: Dodawanie zakładki</h3>
-          <p style="margin-bottom: 20px;">Przeciągnij przycisk na pasek zakładek.</p>
-          <a id="t212-bookmarklet" href="javascript:void(0)" class="bookmark-btn"
-            >🚀 T212 Export Tool | <b class="date"></b>
-          </a>
-          <p
+          <span
             style="
-              margin-top: 20px;
-
-              font-size: 0.85rem;
-
-              color: var(--text-muted);
-            "
-          >
-            Brak paska? Naciśnij <kbd>Ctrl</kbd> + <kbd>Shift</kbd> +
-
-            <kbd>B</kbd>
-          </p>
-        </div>
-
-        <div>
-          <h3
-            style="
-              border-bottom: 1px solid var(--border);
-              padding-bottom: 10px;
-              text-align: left;
-              padding-left: 10px;
-            "
-          >
-            🚀 Szybka Instrukcja (Bookmarklet)
-          </h3>
-          <ol
-            style="
-              font-size: 0.95rem;
-              color: var(--text-main);
-              line-height: 1.8;
-              text-align: left;
-            "
-          >
-            <li>
-              Otwórz <b>Chrome</b> lub <b>Firefox</b> i zaloguj się do swojego
-              konta <b>Trading212</b>.
-            </li>
-            <li>
-              Upewnij się, że jesteś na koncie <b>CFD</b>. Następnie kliknij
-              zakładkę <b>🚀 T212 Export Tool</b> zapisaną wcześniej na Twoim
-              pasku zakładek.
-            </li>
-            <li>
-              W pierwszym oknie wpisz <b>walutę swojego konta</b> Obsługiwane
-              Waluty:<span class="availableCurriences">
-                <kbd>PLN</kbd>, <kbd>EUR</kbd>, <kbd>USD</kbd>
-              </span>
-            </li>
-            <li>
-              W kolejnym oknie wpisz datę <b>POCZĄTKOWĄ</b> (format:
-              <kbd>RRRR-MM-DD</kbd>).
-            </li>
-            <li>
-              Następnie wpisz datę <b>KOŃCOWĄ</b> (format:
-              <kbd>RRRR-MM-DD</kbd>).
-            </li>
-            <li>
-              Zatwierdź i poczekaj na wygenerowanie danych (może to potrwać od
-              10 do 60 sekund). Po zakończeniu kliknij <b>OK</b> w komunikacie
-              podsumowującym.
-            </li>
-            <li>
-              Plik <b>T212_CFD_[zakres_dat].json</b> zostanie automatycznie
-              pobrany na Twój komputer.
-              <br />
-              <small style="color: var(--text-muted)">
-                ⚠️ Nazwa pliku będzie dynamicznie dopasowana do wybranego przez
-                Ciebie okresu.
-              </small>
-            </li>
-            <li>
-              Wczytaj pobrany plik na platformę wspierającą raporty JSON z tego
-              skryptu.
-            </li>
-          </ol>
-        </div>
-        <hr style="margin: 40px 0 20px 0" />
-        <hr style="margin: 40px 0 20px 0" />
-        <div class="copy-section">
-          <h3>Opcja 2: Konsola DevTools </h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted)">
-            Skopiuj kod i wklej go w zakładce <b>Console</b> (F12) na stronie
-            Trading212.
-          </p>
-
-          <div class="code-wrapper">
-            <pre id="raw-code-input">Ładowanie kodu...</pre>
-            <div class="copy-bar">
-              <span
-                id="copy-status"
-                style="color: var(--success); font-size: 0.8rem; opacity: 0"
-                >Skopiowano!</span
-              >
-              <button class="copy-btn" onclick="copyRawCode()">
-                Kopiuj kod skryptu
-              </button>
-            </div>
-          </div>
-        </div>
-        <div style="margin-top: 30px">
-          <h3
-            style="
-              border-bottom: 1px solid var(--border);
-              padding-bottom: 10px;
-              text-align: left;
-              padding-left: 10px;
-            "
-          >
-            📋 Pełna Instrukcja Eksportu (Konsola F12)
-          </h3>
-          <ol
-            style="
-              font-size: 0.95rem;
-              color: var(--text-main);
-              line-height: 1.8;
-              margin-top: 20px;
-              text-align: left;
-            "
-          >
-            <li>
-              Otwórz <b>Chrome</b> lub <b>Firefox</b> i zaloguj się do
-              <b>Trading212</b>.
-            </li>
-            <li>Przejdź na konto <b>CFD</b>.</li>
-            <li>
-              Otwórz narzędzia deweloperskie: naciśnij klawisz <kbd>F12</kbd>.
-            </li>
-            <li>Przejdź do zakładki <b>Console</b> (Konsola).</li>
-            <li>
-              Wklej skopiowany wcześniej kod skryptu i naciśnij
-              <kbd>Enter</kbd>. <br /><small style="color: var(--text-muted)"
-                >* Jeśli przeglądarka blokuje wklejanie, wpisz ręcznie
-                <code>allow pasting</code> i naciśnij Enter, a następnie spróbuj
-                ponownie.</small
-              >
-            </li>
-            <li>
-              W pierwszym oknie wpisz <b>walutę swojego konta</b> Obsługiwane
-              Waluty:<span class="availableCurriences">
-                <kbd>PLN</kbd>, <kbd>EUR</kbd>, <kbd>USD</kbd>
-              </span>
-            </li>
-            <li>
-              W kolejnym oknie wpisz datę <b>OD</b> (format:
-              <kbd>RRRR-MM-DD</kbd>).
-            </li>
-            <li>
-              W następnym oknie wpisz datę <b>DO</b> (format:
-              <kbd>RRRR-MM-DD</kbd>).
-            </li>
-            <li>
-              Zatwierdź i poczekaj na wygenerowanie danych (może to zająć ok.
-              30-60 sekund). Po zakończeniu kliknij <b>OK</b> w oknie
-              podsumowania.
-            </li>
-            <li>
-              Plik <b>T212_CFD_[zakres_dat].json</b> zostanie pobrany
-              automatycznie.
-              <br />
-              <small style="color: var(--text-muted)"
-                >⚠️ Nazwa pliku będzie odpowiadać wybranemu przez Ciebie
-                zakresowi dat.</small
-              >
-            </li>
-            <li>Wczytaj plik na platformie wspierającej format T212 JSON.</li>
-          </ol>
-        </div>
-        <div style="margin-top: 70px">
-          <h3
-            style="
-              border-bottom: 1px solid var(--border);
-              padding-bottom: 10px;
-              text-align: left;
-              padding-left: 10px;
-            "
-          >
-            📱 Pełna Instrukcja dla Mobile (Chrome / Safari / Firefox)
-          </h3>
-          <ol
-            style="
-              font-size: 0.95rem;
-              color: var(--text-main);
-              margin-top: 20px;
-              line-height: 1.8;
-              text-align: left;
-            "
-          >
-          
-          <div class="code-wrapper">
-            <pre id="bookmarklet-code-input" style="text-align: left;white-space: pre-wrap;word-wrap: break-word;word-break: break-all; max-height: 100px; overflow-y: auto;">Ładowanie kodu...</pre>
-            <div class="copy-bar">
-              <span
-                id="copy-status"
-                style="color: var(--success); font-size: 0.8rem; opacity: 0"
-                >Skopiowano!</span
-              >
-              <button class="copy-btn" onclick="copyRawCode()">
-                Kopiuj kod skryptu
-              </button>
-            </div>
-          </div>
-            <li>
-              Skopiuj kod przyciskiem <b>"Kopiuj kod skryptu"</b> (sekcja
-              powyżej).
-            </li>
-            <li>
-              Otwórz stronę Trading212 w przeglądarce, dodaj ją do
-              <b>Zakładek</b> (ikona gwiazdki lub menu udostępniania).
-            </li>
-            <li>
-              Przejdź do edycji tej zakładki. Zmień jej nazwę na:
-              <kbd>🚀 T212 Export</kbd>.
-            </li>
-            <li>
-              W polu <b>Adres URL</b> usuń aktualny link i wklej skopiowany kod
-              (zaczynający się od <code>javascript:</code>). Zapisz zmiany.
-            </li>
-            <li>
-              <b>Uruchomienie:</b> Będąc na zalogowanym koncie CFD, kliknij w
-              pasek adresu przeglądarki i wpisz: <kbd>T212 Export</kbd>.
-            </li>
-            <li>
-              Z listy podpowiedzi wybierz element z <b>ikoną gwiazdki</b> (Twoją
-              zakładkę). Skrypt uruchomi się na stronie.
-            </li>
-            <li>
-              W oknach, które się pojawią, podaj kolejno:
-              <b>Walutę konta</b> (np. <kbd>PLN</kbd>), <b>Datę OD</b> oraz
-              <b>Datę DO</b> (format: <kbd>RRRR-MM-DD</kbd>).
-            </li>
-            <li>
-              Zatwierdź komunikat końcowy i poczekaj na pobranie pliku
-              <b>.json</b>.
-            </li>
-          </ol>
-          <p
-            style="
-              font-size: 0.85rem;
-              color: var(--warning);
-              padding-left: 10px;
-              margin-top: 10px;
-              line-height: 1.4;
-            "
-          >
-            ⚠️ <b>Bardzo ważne:</b> Przeglądarki mobilne blokują skrypty
-            uruchamiane bezpośrednio z menu zakładek. Musisz wpisać nazwę
-            zakładki w pasku adresu i wybrać ją z podpowiedzi – to jedyny sposób
-            na start narzędzia.
-          </p>
-        </div>
-      </main>
-
-      <section class="attribution-card">
-        <div class="avatar" style="display: block">
-          <img class="avatar-img" src="https://github.com/DarkSpine433.png" />
-        </div>
-        <div class="info">
-          <h4>Developed by Dawid Konopiaty</h4>
-          <p
-            style="
-              margin: 5px 0;
-              margin-bottom: 10px;
               font-size: 0.9rem;
-              color: var(--text-muted);
+              font-weight: 700;
+              color: var(--accent);
+              text-transform: uppercase;
+              letter-spacing: 0.1em;
             "
+            >🚀 Trading212 Tool</span
           >
-            Pasjonat programowania i inwestowania. Ten projekt powstał z myślą o
-            ułatwieniu życia inwestorom korzystającym z Trading212 CFD.
-          </p>
-          <div class="social-links">
-            <a
-              href="https://github.com/DarkSpine433"
-              target="_blank"
-              style="color: var(--accent); text-decoration: none"
-              >🔗 GitHub Profile</a
-            >
-          </div>
         </div>
-      </section>
 
-      <section class="docs-grid">
-        <div class="doc-item">
-          <h4>Dlaczego ten skrypt?</h4>
-          <p>
-            Trading212 CFD nie posiada natywnego eksportu szczegółowych raportów
-            JSON. To narzędzie wypełnia tę lukę.
-          </p>
-        </div>
-        <div class="doc-item" style="border-left-color: #3fb950">
-          <h4>Prywatność</h4>
-          <p>
-            Dane są przetwarzane lokalnie. Kod jest dostępny na GitHub do wglądu
-            dla każdego użytkownika.
-          </p>
-          <button
-            class="copy-btn"
+        <h1 class="text-gradient">CFD Data Exporter</h1>
+
+        <p
+          class="subtitle p-2"
+          style="max-width: 600px; margin: 0 auto; line-height: 1.8"
+        >
+          Eksportuj transakcje CFD do formatu <kbd>JSON</kbd> w kilka sekund.
+          <br />
+          <span
             style="
-              margin-top: 10px;
-              background: var(--success);
-              cursor: pointer;
-            "
-            onclick="
-              window.open(
-                'https:\/\/github.com/DarkSpine433/T212-CFD-DATA',
-                '_blank',
-              )
+              color: var(--text-muted);
+              font-weight: 300;
+              font-size: 0.95rem;
             "
           >
-            Zobacz kod na GitHub
-          </button>
-        </div>
-      </section>
+            Zoptymalizowane pod kątem polskich raportów podatkowych
+            <strong style="color: var(--success); font-weight: 600"
+              >PIT-38</strong
+            >.
+          </span>
+        </p>
+
+        <hr
+          style="max-width: 100px; margin: 20px auto 0px auto; opacity: 0.2"
+        />
+      </header>
+
+      <div class="container" style="margin: 0 auto">
+        <main class="tool-card">
+          <div class="info-box" style="padding: 10px; border-radius: 10px">
+            ℹ️ <b>INFO:</b>: Ostatnia aktualizacja kodu: <b class="date"></b>.
+            <br />Jeśli Twoja zapisana zakładka jest starsza, usuń ją i dodaj
+            ponownie. Możesz również skopiować aktualny kod z sekcji poniżej i
+            wkleić go w pole adresu istniejącej zakładki, aby cieszyć się
+            najnowszymi poprawkami.
+          </div>
+          <div
+            class="warning-box"
+            style="padding: 10px; margin-top: 10px; border-radius: 10px"
+          >
+            ⚠️ <b>WAŻNE:</b> Nie uruchamiaj skryptu kilkukrotnie w ciągu kilku
+            minut! Może to skutkować blokadą dostępu do Trading212 na około 5
+            minut.
+          </div>
+          <h3 style="text-align: left; margin-top: 20px">
+            0px auto Opcja 1: Zakładka Bookmarklet (PC | Rekomendowany)
+          </h3>
+          <div class="step-box">
+            <h3>Krok 1: Dodawanie zakładki</h3>
+            <p style="margin-bottom: 20px">
+              Przeciągnij przycisk na pasek zakładek.
+            </p>
+            <a
+              id="t212-bookmarklet"
+              href="javascript:void(0)"
+              class="bookmark-btn"
+              >🚀 T212 Export Tool | <b class="date"></b>
+            </a>
+            <p
+              style="
+                margin-top: 20px;
+
+                font-size: 0.85rem;
+
+                color: var(--text-muted);
+              "
+            >
+              Brak paska? Naciśnij <kbd>Ctrl</kbd> + <kbd>Shift</kbd> +
+
+              <kbd>B</kbd>
+            </p>
+          </div>
+
+          <div>
+            <h3
+              style="
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 10px;
+                text-align: left;
+                padding-left: 10px;
+              "
+            >
+              🚀 Szybka Instrukcja (Bookmarklet)
+            </h3>
+            <ol
+              style="
+                font-size: 0.95rem;
+                color: var(--text-main);
+                line-height: 1.8;
+                text-align: left;
+              "
+            >
+              <li>
+                Otwórz <b>Chrome</b> lub <b>Firefox</b> i zaloguj się do swojego
+                konta <b>Trading212</b>.
+              </li>
+              <li>
+                Upewnij się, że jesteś na koncie <b>CFD</b>. Następnie kliknij
+                zakładkę <b>🚀 T212 Export Tool</b> zapisaną wcześniej na Twoim
+                pasku zakładek.
+              </li>
+              <li>
+                W pierwszym oknie wpisz <b>walutę swojego konta</b> Obsługiwane
+                Waluty:<span class="availableCurriences">
+                  <kbd>PLN</kbd>, <kbd>EUR</kbd>, <kbd>USD</kbd>
+                </span>
+              </li>
+              <li>
+                W kolejnym oknie wpisz datę <b>POCZĄTKOWĄ</b> (format:
+                <kbd>RRRR-MM-DD</kbd>).
+              </li>
+              <li>
+                Następnie wpisz datę <b>KOŃCOWĄ</b> (format:
+                <kbd>RRRR-MM-DD</kbd>).
+              </li>
+              <li>
+                Zatwierdź i poczekaj na wygenerowanie danych (może to potrwać od
+                10 do 60 sekund). Po zakończeniu kliknij <b>OK</b> w komunikacie
+                podsumowującym.
+              </li>
+              <li>
+                Plik <b>T212_CFD_[zakres_dat].json</b> zostanie automatycznie
+                pobrany na Twój komputer.
+                <br />
+                <small style="color: var(--text-muted)">
+                  ⚠️ Nazwa pliku będzie dynamicznie dopasowana do wybranego
+                  przez Ciebie okresu.
+                </small>
+              </li>
+              <li>
+                Wczytaj pobrany plik na platformę wspierającą raporty JSON z
+                tego skryptu.
+              </li>
+            </ol>
+          </div>
+          <hr style="margin: 40px 0 20px 0" />
+          <hr style="margin: 40px 0 20px 0" />
+          <div class="copy-section">
+            <h3>Opcja 2: Konsola DevTools</h3>
+            <p style="font-size: 0.9rem; color: var(--text-muted)">
+              Skopiuj kod i wklej go w zakładce <b>Console</b> (F12) na stronie
+              Trading212.
+            </p>
+
+            <div class="code-wrapper">
+              <pre id="raw-code-input">Ładowanie kodu...</pre>
+              <div class="copy-bar">
+                <span
+                  id="copy-status"
+                  style="color: var(--success); font-size: 0.8rem; opacity: 0"
+                  >Skopiowano!</span
+                >
+                <button class="copy-btn" onclick="copyRawCode()">
+                  Kopiuj kod skryptu
+                </button>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 30px">
+            <h3
+              style="
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 10px;
+                text-align: left;
+                padding-left: 10px;
+              "
+            >
+              📋 Pełna Instrukcja Eksportu (Konsola F12)
+            </h3>
+            <ol
+              style="
+                font-size: 0.95rem;
+                color: var(--text-main);
+                line-height: 1.8;
+                margin-top: 20px;
+                text-align: left;
+              "
+            >
+              <li>
+                Otwórz <b>Chrome</b> lub <b>Firefox</b> i zaloguj się do
+                <b>Trading212</b>.
+              </li>
+              <li>Przejdź na konto <b>CFD</b>.</li>
+              <li>
+                Otwórz narzędzia deweloperskie: naciśnij klawisz <kbd>F12</kbd>.
+              </li>
+              <li>Przejdź do zakładki <b>Console</b> (Konsola).</li>
+              <li>
+                Wklej skopiowany wcześniej kod skryptu i naciśnij
+                <kbd>Enter</kbd>. <br /><small style="color: var(--text-muted)"
+                  >* Jeśli przeglądarka blokuje wklejanie, wpisz ręcznie
+                  <code>allow pasting</code> i naciśnij Enter, a następnie
+                  spróbuj ponownie.</small
+                >
+              </li>
+              <li>
+                W pierwszym oknie wpisz <b>walutę swojego konta</b> Obsługiwane
+                Waluty:<span class="availableCurriences">
+                  <kbd>PLN</kbd>, <kbd>EUR</kbd>, <kbd>USD</kbd>
+                </span>
+              </li>
+              <li>
+                W kolejnym oknie wpisz datę <b>OD</b> (format:
+                <kbd>RRRR-MM-DD</kbd>).
+              </li>
+              <li>
+                W następnym oknie wpisz datę <b>DO</b> (format:
+                <kbd>RRRR-MM-DD</kbd>).
+              </li>
+              <li>
+                Zatwierdź i poczekaj na wygenerowanie danych (może to zająć ok.
+                30-60 sekund). Po zakończeniu kliknij <b>OK</b> w oknie
+                podsumowania.
+              </li>
+              <li>
+                Plik <b>T212_CFD_[zakres_dat].json</b> zostanie pobrany
+                automatycznie.
+                <br />
+                <small style="color: var(--text-muted)"
+                  >⚠️ Nazwa pliku będzie odpowiadać wybranemu przez Ciebie
+                  zakresowi dat.</small
+                >
+              </li>
+              <li>Wczytaj plik na platformie wspierającej format T212 JSON.</li>
+            </ol>
+          </div>
+          <div style="margin-top: 70px">
+            <h3
+              style="
+                border-bottom: 1px solid var(--border);
+                padding-bottom: 10px;
+                text-align: left;
+                padding-left: 10px;
+              "
+            >
+              📱 Pełna Instrukcja dla Mobile (Chrome / Safari / Firefox)
+            </h3>
+            <div class="code-wrapper">
+              <pre
+                id="bookmarklet-code-input"
+                style="
+                  text-align: left;
+                  white-space: wrap;
+                  word-break: break-all;
+                  max-height: 100px;
+                  overflow-y: auto;
+                "
+              >
+Ładowanie kodu...</pre
+              >
+              <div class="copy-bar">
+                <span
+                  id="copy-status-2"
+                  style="color: var(--success); font-size: 0.8rem; opacity: 0"
+                  >Skopiowano!</span
+                >
+                <button class="copy-btn" onclick="copyBookmarkletCode()">
+                  Kopiuj kod skryptu
+                </button>
+              </div>
+            </div>
+            <ol
+              style="
+                font-size: 0.95rem;
+                color: var(--text-main);
+                margin-top: 20px;
+                line-height: 1.8;
+                text-align: left;
+              "
+            >
+              <li>
+                Skopiuj kod przyciskiem <b>"Kopiuj kod skryptu"</b> (sekcja
+                powyżej).
+              </li>
+              <li>
+                Otwórz stronę Trading212 w przeglądarce, dodaj ją do
+                <b>Zakładek</b> (ikona gwiazdki lub menu udostępniania).
+              </li>
+              <li>
+                Przejdź do edycji tej zakładki. Zmień jej nazwę na:
+                <kbd>🚀 T212 Export</kbd>.
+              </li>
+              <li>
+                W polu <b>Adres URL</b> usuń aktualny link i wklej skopiowany
+                kod (zaczynający się od <code>javascript:</code>). Zapisz
+                zmiany.
+              </li>
+              <li>
+                <b>Uruchomienie:</b> Będąc na zalogowanym koncie CFD, kliknij w
+                pasek adresu przeglądarki i wpisz: <kbd>T212 Export</kbd>.
+              </li>
+              <li>
+                Z listy podpowiedzi wybierz element z
+                <b>ikoną gwiazdki</b> (Twoją zakładkę). Skrypt uruchomi się na
+                stronie.
+              </li>
+              <li>
+                W oknach, które się pojawią, podaj kolejno:
+                <b>Walutę konta</b> (np. <kbd>PLN</kbd>), <b>Datę OD</b> oraz
+                <b>Datę DO</b> (format: <kbd>RRRR-MM-DD</kbd>).
+              </li>
+              <li>
+                Zatwierdź komunikat końcowy i poczekaj na pobranie pliku
+                <b>.json</b>.
+              </li>
+            </ol>
+            <p
+              style="
+                font-size: 0.85rem;
+                color: var(--warning);
+                padding-left: 10px;
+                margin-top: 10px;
+                line-height: 1.4;
+              "
+            >
+              ⚠️ <b>Bardzo ważne:</b> Przeglądarki mobilne blokują skrypty
+              uruchamiane bezpośrednio z menu zakładek. Musisz wpisać nazwę
+              zakładki w pasku adresu i wybrać ją z podpowiedzi – to jedyny
+              sposób na start narzędzia.
+            </p>
+          </div>
+        </main>
+
+        <section class="attribution-card">
+          <div class="avatar" style="display: block">
+            <img class="avatar-img" src="https://github.com/DarkSpine433.png" />
+          </div>
+          <div class="info">
+            <h4>Developed by Dawid Konopiaty</h4>
+            <p
+              style="
+                margin: 5px 0;
+                margin-bottom: 10px;
+                font-size: 0.9rem;
+                color: var(--text-muted);
+              "
+            >
+              Pasjonat programowania i inwestowania. Ten projekt powstał z myślą
+              o ułatwieniu życia inwestorom korzystającym z Trading212 CFD.
+            </p>
+            <div class="social-links">
+              <a
+                href="https://github.com/DarkSpine433"
+                target="_blank"
+                style="color: var(--accent); text-decoration: none"
+                >🔗 GitHub Profile</a
+              >
+            </div>
+          </div>
+        </section>
+
+        <section class="docs-grid">
+          <div class="doc-item">
+            <h4>Dlaczego ten skrypt?</h4>
+            <p>
+              Trading212 CFD nie posiada natywnego eksportu szczegółowych
+              raportów JSON. To narzędzie wypełnia tę lukę.
+            </p>
+          </div>
+          <div class="doc-item" style="border-left-color: #3fb950">
+            <h4>Prywatność</h4>
+            <p>
+              Dane są przetwarzane lokalnie. Kod jest dostępny na GitHub do
+              wglądu dla każdego użytkownika.
+            </p>
+            <button
+              class="copy-btn"
+              style="
+                margin-top: 10px;
+                background: var(--success);
+                cursor: pointer;
+              "
+              onclick="
+                window.open(
+                  'https:\/\/github.com/DarkSpine433/T212-CFD-DATA',
+                  '_blank',
+                )
+              "
+            >
+              Zobacz kod na GitHub
+            </button>
+          </div>
+        </section>
+      </div>
     </div>
 
     <footer
@@ -477,20 +516,36 @@
       });
       const rawCode = getData.toString();
 
-
       const bookmarkletCode = `javascript:(function(){(${rawCode})();})();`;
       const encodedCode = encodeURI(bookmarkletCode);
 
       document.getElementById("t212-bookmarklet").href = encodedCode;
 
-      document.getElementById("raw-code-input").textContent = `/*${getInstruction()}*/\n\n${bookmarkletCode}`;
-       document.getElementById("bookmarklet-code-input").textContent = `${encodedCode}`;
+      document.getElementById("raw-code-input").textContent =
+        `/*${getInstruction()}*/\n\n${bookmarkletCode}`;
+      document.getElementById("bookmarklet-code-input").textContent =
+        `${encodedCode}`;
 
       window.copyRawCode = async function () {
         const codeText = document.getElementById("raw-code-input").textContent;
         try {
           await navigator.clipboard.writeText(codeText);
           const status = document.getElementById("copy-status");
+          status.style.opacity = "1";
+          setTimeout(() => {
+            status.style.opacity = "0";
+          }, 2000);
+        } catch (err) {
+          console.error("Błąd kopiowania:", err);
+        }
+      };
+      window.copyBookmarkletCode = async function () {
+        const codeText = document.getElementById(
+          "bookmarklet-code-input",
+        ).textContent;
+        try {
+          await navigator.clipboard.writeText(codeText);
+          const status = document.getElementById("copy-status-2");
           status.style.opacity = "1";
           setTimeout(() => {
             status.style.opacity = "0";

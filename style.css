@@ -2,7 +2,7 @@
   --primary: #0366d6;
   --primary-hover: #0056b3;
   --bg: #0d1117;
-  --card-bg: rgba(22, 27, 34, 0.8);
+  --card-bg: rgba(22, 27, 34, 0.9);
   --text-main: #c9d1d9;
   --text-muted: #8b949e;
   --accent: #58a6ff;
@@ -140,7 +140,6 @@ h1 {
 
 .tool-card {
   background: var(--card-bg);
-  backdrop-filter: blur(10px);
   border: 1px solid var(--border);
   border-radius: 20px;
   padding: 40px;
