@@ -1,25 +1,72 @@
-/*
-Trading212 CFD nie posiada zwyklego eksportu raportu i nalezy go wygenrowac w ponizszy sposob:
- !!Koniecznie nie uruchamiaj skryptu kilkukrotnie w przeciagu kilku minut! Moze to skutkowac blokada dostepu do Trading212 na okolo 5min.
-1. Otworz Chrome lub Firefox
-2. Zaloguj sie do Trading212
-3. Przejdz na konto CFD. Czasmi konieczne jest przejscie do wyszukiwarki instrumentow CFD, przyczyna nie jest nam znana.
-4. Otworz "Developers Tools" w Firefox lub "DevTools" w Chrome przy pomocy przycisku F12.
-5. Przejdz na zakladke "Console"/"Konsola" w Firefox/Chrome
-6. Wklej caly ponizszy tekst i kliknij ENTER/Uruchom
-6a. Przegladarka moze Cie poprosic o dodatkowa weryfikacje upewniajaca sie, ze chcesz uruchomic zewnetrzny skrypt
-7. Na stronie t212 w której wkleiłeś skrypt pojawi się okno z zapytaniem od kiedy chcesz pobrac dane wpisz date w formacie RRRR-MM-DD
-7a. Na stronie t212 w której wkleiłeś skrypt pojawi się okno z zapytaniem do kiedy chcesz pobrac dane wpisz date w formacie RRRR-MM-DD
-8. Po okolo 30 wyświetli się komunikat o tym, ile udało pobrać się rekorduów kliknij ok. i powinien zostac pobrany plik 'Trading212_CFD.json'.
-9. Wczytaj go na naszej platformie
-10. Powodzenia!
+export const getInstruction = () => {
+  const instruction = `
+  ===========================================================
+  🚀 TRADING 212 CFD DATA EXPORTER
+  ===========================================================
+  Platforma Trading212 nie posiada natywnego eksportu danych CFD.
+  Ten skrypt generuje plik JSON gotowy do rozliczeń podatkowych.
 
-source code https://github.com/DarkSpine433/T212-CFD-DATA/ 
+  Pełna instrukcja i Bookmarklet (szybsza metoda): 
+  👉 https://darkspine433.github.io/T212-CFD-DATA/
 
-*/
+  Kod źródłowy: https://github.com/DarkSpine433/T212-CFD-DATA/
+  Autor: Dawid Konopiaty (DarkSpine433)
+  ===========================================================
+
+  ⚠️  WAŻNE OSTRZEŻENIE:
+  Nie uruchamiaj skryptu kilkukrotnie w ciągu krótkiego czasu! 
+  Zbyt częste zapytania mogą skutkować tymczasową blokadą konta 
+  przez Trading212 (ok. 5 minut).
+
+  INSTRUKCJA URUCHOMIENIA (KONSOLA):
+  1. Zaloguj się do Trading212 w przeglądarce Chrome lub Firefox.
+  2. Przejdź na konto CFD. 
+     (Jeśli skrypt nie zadziała, otwórz wyszukiwarkę instrumentów CFD).
+  3. Otwórz Narzędzia Deweloperskie naciskając klawisz [F12].
+  4. Przejdź do zakładki "Console" (Konsola).
+  5. Wklej cały skopiowany kod i naciśnij [ENTER].
+     *Przeglądarka może wymagać wpisania 'allow pasting' przed wklejeniem.
+  6. Postępuj zgodnie z komunikatami na ekranie:
+     a) Wpisz walutę konta (np. PLN, EUR, USD, GBP, CHF, HUF itp.).
+     b) Podaj datę POCZĄTKOWĄ w formacie RRRR-MM-DD (np. 2024-01-01).
+     c) Podaj datę KOŃCOWĄ w formacie RRRR-MM-DD (np. 2024-12-31).
+  7. Po zakończeniu pobierania (ok. 30-60s) zatwierdź komunikat OK.
+  8. Plik 'Trading212_CFD_[DATA].json' zostanie automatycznie pobrany.
+
+  9. Wczytaj pobrany plik na platformie wspierającej ten format.
+  ===========================================================
+`;
+  return instruction;
+};
 
 async function getData() {
   /*---  Pobieranie dat ---*/
+  const currencyList = [
+    "PLN",
+    "EUR",
+    "GBP",
+    "USD",
+    "CHF",
+    "HUF",
+    "CZK",
+    "RON",
+    "DKK",
+    "NOK",
+    "SEK",
+    "CAD",
+  ];
+  const accountCurrency = prompt(
+    "Wpisz walute twojego konta Obsługiwane waluty znajdziesz w instrukcji:",
+    "PLN",
+  ).toUpperCase();
+  if (!accountCurrency) return;
+  if (!currencyList.includes(accountCurrency)) {
+    alert(
+      `Nie obsługiwana waluta ${accountCurrency}. Obsługiwane waluty to ${currencyList.join(", ")}`,
+    );
+    return;
+  }
+
   const fromDateStr = prompt(
     "Wpisz datę OD której ma wziąć dane (format RRRR-MM-DD):",
     `${new Date().getFullYear() - 1}-01-01`,
@@ -36,6 +83,13 @@ async function getData() {
   const maxDate = new Date(toDateStr);
   const requestBase = `https://live.trading212.com/rest/reports/`;
   const requestFilter = `&perPage=20&from=${fromDateStr}&to=${toDateStr}`;
+
+  if (typeof maxDate === "undefined")
+    throw new Error(
+      "Zmienna 'maxDate' nie istnieje. Kod wklejono w złym miejscu?",
+    );
+  if (typeof requestBase === "undefined")
+    throw new Error("Zmienna 'requestBase' nie istnieje.");
 
   /*---  Mechanizm autoryzacji ---*/
   const getCookie = (name) => {
@@ -58,8 +112,12 @@ async function getData() {
 
   console.log(`%c Rozpoczynam pobieranie: ${fromDateStr} - ${toDateStr}`);
 
-  /*---  POZYCJE ---*/
+  /*---  Tablice Danych ---*/
   let positionDetails = [];
+  let interestDetails = [];
+  let feeDetails = [];
+
+  /*---  POZYCJE ---*/
   try {
     let res = await (
       await fetch(requestBase + "positions?page=1" + requestFilter, auth)
@@ -82,26 +140,62 @@ async function getData() {
 
           if (details && details.length > 1) {
             const openEvent = details[0];
-            const closeEvent = details[details.length - 1];
-            const closeEventActionType = closeEvent.eventType.action;
-            if (closeEventActionType != "closed") {
-              console.log(
-                "pozycja jeszcze jest nie zamknięta więc nie została dodana do pliku",
-              );
-              continue;
+            const openDirection = openEvent.direction;
+
+            for (let j = 1; j < details.length; j++) {
+              const event = details[j];
+              const actionType = event.eventType.action;
+
+              const isClosedAction = actionType === "closed";
+              const isPartialClose =
+                actionType === "modified" && event.direction !== openDirection;
+
+              if (isClosedAction || isPartialClose) {
+                const currentAvgOpenPrice = parseFloat(event.avgPrice);
+                const closePrice = parseFloat(event.price);
+                const qty = parseFloat(event.quantity);
+
+                let pnl = (closePrice - currentAvgOpenPrice) * qty;
+                if (openDirection === "sell") {
+                  pnl = (currentAvgOpenPrice - closePrice) * qty;
+                }
+
+                const closeValueInstrumentCurrency = qty * closePrice;
+
+                const fxFee = (closeValueInstrumentCurrency * 0.005).toFixed(4);
+
+                if (
+                  parseFloat(fxFee) > 0 &&
+                  position.currency.toUpperCase() !==
+                    accountCurrency.toUpperCase()
+                ) {
+                  feeDetails.push({
+                    type: "FEE_FX",
+                    time: event.time,
+                    code: position.code,
+                    currency: position.currency,
+                    accountCurrency: accountCurrency,
+                    interest: fxFee,
+                  });
+                }
+
+                positionDetails.push({
+                  type: "POSITION",
+                  time: event.time, // Czas zamknięcia tej konkretnej transzy
+                  openingTime: position.dateCreated,
+                  code: position.code,
+                  orderName: event.eventNumber.name,
+                  currency: position.currency,
+                  quantity: qty,
+                  direction: openDirection,
+                  openDirection: openDirection,
+                  closeDirection: event.direction,
+                  price: event.price,
+                  openPrice: currentAvgOpenPrice,
+                  closePrice: closePrice,
+                });
+              }
             }
-            positionDetails.push({
-              type: "POSITION",
-              time: position.dateClosed,
-              openingTime: position.dateCreated,
-              code: position.code,
-              orderName: position.orderNumber.name,
-              currency: position.currency,
-              quantity: openEvent.quantity,
-              direction: openEvent.direction,
-              openPrice: closeEvent.avgPrice,
-              closePrice: closeEvent.price,
-            });
           }
         }
         console.log(`Pobrano pozycje: ${i}/${pageCount}`);
@@ -120,15 +214,7 @@ async function getData() {
   }
 
   /*--- ODSETKI OD GOTÓWKI  ---*/
-  let interestDetails = [];
   try {
-    if (typeof maxDate === "undefined")
-      throw new Error(
-        "Zmienna 'maxDate' nie istnieje. Kod wklejono w złym miejscu?",
-      );
-    if (typeof requestBase === "undefined")
-      throw new Error("Zmienna 'requestBase' nie istnieje.");
-
     let cursor = maxDate.getTime();
     cursor += 24 * 60 * 60 * 1000; // +1 dzień zapasu
 
@@ -157,7 +243,6 @@ async function getData() {
       if (!res) throw new Error("Odpowiedź API jest pusta (null/undefined).");
 
       if (!res.interests) {
-        console.log("Brak pola 'interests' w odpowiedzi - kończę pętlę.");
         hasNext = false;
         break;
       }
@@ -206,7 +291,6 @@ async function getData() {
   }
 
   /*--- OPŁATY (OVERNIGHT FEES) ---*/
-  let feeDetails = [];
   try {
     const feeUrl = `https://live.trading212.com/rest/reports/overnight-holding-fee`;
     const res = await (
@@ -230,9 +314,6 @@ async function getData() {
             type: "FEE_OVERNIGHT",
             time: overnightFee.time,
             code: overnightFee.code,
-            orderName: overnightFee.orderNumber
-              ? overnightFee.orderNumber.name
-              : "N/A",
             currency: overnightFee.accountCurrency,
             interest: overnightFee.interest,
             quantity: overnightFee.quantity,
