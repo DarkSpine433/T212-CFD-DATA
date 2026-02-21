@@ -40,6 +40,40 @@ const getInstruction = () => {
 };
 
 async function getData(getCurrencies = false) {
+  const nbpCache = {};
+
+  const getNBPExchangeRate = async (currency, date) => {
+    if (currency === "PLN") return 1;
+
+    const targetDate = new Date(date);
+    targetDate.setDate(targetDate.getDate() - 1);
+    const dateString = targetDate.toISOString().split("T")[0];
+
+    const cacheKey = `${currency}_${dateString}`;
+    if (nbpCache[cacheKey]) return nbpCache[cacheKey];
+
+    try {
+      const response = await fetch(
+        `https://api.nbp.pl/api/exchangerates/rates/A/${currency}/${dateString}/?format=json`,
+      );
+
+      if (!response.ok) {
+        targetDate.setDate(targetDate.getDate() - 1);
+        return await getNBPExchangeRate(currency, targetDate);
+      }
+
+      const data = await response.json();
+      const rate = data.rates[0].mid;
+      nbpCache[cacheKey] = rate;
+      return rate;
+    } catch (e) {
+      console.warn(
+        `Błąd NBP dla ${currency} na dzień ${dateString}, używam kursu 1:1`,
+      );
+      return 1;
+    }
+  };
+
   const currencyList = [
     "PLN",
     "EUR",
@@ -169,20 +203,26 @@ async function getData(getCurrencies = false) {
                   pnl = (currentAvgOpenPrice - closePrice) * qty;
                 }
 
-                const calculatedFxFee = (Math.abs(pnl) * 0.005).toFixed(4);
-                const finalFxFee =
+                const calculatedFxFee = Math.abs(pnl) * 0.005;
+                const finalFxFeeUSD =
                   position.currency !== accountCurrency
                     ? parseFloat(calculatedFxFee)
                     : 0;
-
-                if (finalFxFee > 0) {
+                const rate = await getNBPExchangeRate(
+                  position.currency,
+                  event.time,
+                );
+                const finalFxFeePLN = finalFxFeeUSD * rate;
+                if (finalFxFeeUSD > 0) {
                   feeDetails.push({
                     type: "FEE_FX",
                     time: event.time,
                     code: position.code,
                     currency: position.currency,
+                    interestInCurrency: -Math.abs(finalFxFeeUSD).toFixed(4),
                     accountCurrency: accountCurrency,
-                    interest: -Math.abs(finalFxFee).toFixed(4),
+                    interestInAccountCurrency:
+                      -Math.abs(finalFxFeePLN).toFixed(4),
                   });
                 }
 
@@ -196,7 +236,6 @@ async function getData(getCurrencies = false) {
                     : position.orderNumber.name,
                   currency: position.currency,
                   quantity: qty,
-
                   direction: openDirection,
                   openPrice: currentAvgOpenPrice,
                   closePrice: closePrice,
