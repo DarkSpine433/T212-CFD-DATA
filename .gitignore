@@ -1,2 +1,7 @@
 .vscode
-/testData
+
+testData/*
+!testData/output.json
+!testData/validOutput.json
+
+
