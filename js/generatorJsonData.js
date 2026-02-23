@@ -1107,6 +1107,8 @@ async function getData(getCurrencies = false) {
     summary["Odsetki overnight PLN"];
 
   const summaryText = `
+Pamiętaj, że jest to bardzo przbyliżona kwota do prawdziwego wyniku, a nie dokładny wynik. Do obliczenia dokładnego wyniku użyj profesjonalnego narzędzia do obliczania podatków.
+
 RAPORT TRADING 212 CFD
 Okres: ${fromDateStr} - ${toDateStr}
 --------------------------------------
@@ -1134,7 +1136,7 @@ SUMA NETTO: ${summary["Łącznie netto PLN"].toFixed(2)} PLN
   }
 
   updateProgress(
-    `✅ <b>Eksport zakończony!</b><br/>Plik JSON został pobrany. Możesz teraz zapisać raport tekstowy lub przejrzeć logi.`,
+    `✅ <b>Eksport zakończony!</b><br/>Plik JSON został pobrany. Możesz teraz zapisać raport tekstowy lub przejrzeć logi. Pamiętaj, że jest to bardzo przbyliżona kwota do prawdziwego wyniku, a nie dokładny wynik. Do obliczenia dokładnego wyniku użyj profesjonalnego narzędzia do obliczania podatków.`,
     100,
     `Eksport zakończony sukcesem. Suma netto: ${summary["Łącznie netto PLN"].toFixed(2)} PLN`,
     false,
@@ -1142,7 +1144,7 @@ SUMA NETTO: ${summary["Łącznie netto PLN"].toFixed(2)} PLN
   // Manual close only - as requested by user
 
   alert(
-    `Gotowe! Pobrano ${combinedData.length} rekordów.\n\nWynik netto: ${summary["Łącznie netto PLN"].toFixed(2)} PLN`,
+    `Gotowe! Pobrano ${combinedData.length} rekordów.\n\nWynik netto: ${summary["Łącznie netto PLN"].toFixed(2)} PLN. Pamiętaj, że jest to bardzo przbyliżona kwota do prawdziwego wyniku, a nie dokładny wynik. Do obliczenia dokładnego wyniku użyj profesjonalnego narzędzia do obliczania podatków.`,
   );
   // Replace spinner with green check if no errors occurred
   try {
