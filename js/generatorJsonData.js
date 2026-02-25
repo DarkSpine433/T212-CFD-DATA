@@ -915,7 +915,8 @@ async function getData(getCurrencies = false) {
     }
   } catch (e) {
     console.error("Błąd przy pozycjach:", e);
-    alert("Wystąpił błąd przy pobieraniu pozycji. Sprawdź konsolę.");
+    const errorMsg = `Błąd przy pozycjach: ${e.toString()}`;
+    updateProgress(errorMsg, -1, errorMsg, errorMsg, false);
     stopDownloadingCleanup();
     return;
   }
@@ -1016,8 +1017,11 @@ async function getData(getCurrencies = false) {
     }
     console.log(`Sukces: Pobrano ${interestDetails.length} odsetek.`);
   } catch (e) {
-    console.error("Szczegóły błędu:", e);
-    updateProgress(null, -1, null, true, e);
+    console.error("Błąd przy odsetkach od gotówki:", e);
+    const errorMsg = `Błąd przy odsetkach od gotówki: ${e.toString()}`;
+    updateProgress(errorMsg, -1, errorMsg, errorMsg, false);
+    stopDownloadingCleanup();
+    return;
   }
 
   /*--- OPŁATY (OVERNIGHT FEES) ---*/
@@ -1072,7 +1076,8 @@ async function getData(getCurrencies = false) {
     }
   } catch (e) {
     console.error("Błąd przy opłatach:", e);
-    updateProgress(null, -1, null, true, e);
+    const errorMsg = `Błąd przy opłatach overnight: ${e.toString()}`;
+    updateProgress(errorMsg, -1, errorMsg, errorMsg, false);
     stopDownloadingCleanup();
     return;
   }
