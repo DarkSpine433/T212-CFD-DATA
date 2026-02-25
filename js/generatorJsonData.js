@@ -64,6 +64,11 @@ async function getData(getCurrencies = false) {
           console.warn(
             `Limit NBP dla ${currency} (${dateString}) przekroczony. Używam 1:1`,
           );
+          updateProgress(
+            null,
+            -1,
+            `Limit NBP dla ${currency} (${dateString}) przekroczony. Używam 1:1`,
+          );
           return 1;
         }
 
@@ -89,6 +94,11 @@ async function getData(getCurrencies = false) {
             return await fetchWithRetry(prev, rCount + 1);
           }
           console.warn(
+            `Błąd NBP dla ${currency} (${dateString}): ${e.message}. Używam 1:1`,
+          );
+          updateProgress(
+            null,
+            -1,
             `Błąd NBP dla ${currency} (${dateString}): ${e.message}. Używam 1:1`,
           );
           return 1;
@@ -185,9 +195,12 @@ async function getData(getCurrencies = false) {
     },
     credentials: "include",
   };
+  /*
+  _________________________________________________________________________________
+  _________________________________________________________________________________
+  */
 
   console.log(`%c Rozpoczynam pobieranie: ${fromDateStr} - ${toDateStr}`);
-
   let logsHtml = "";
   let isLogsVisible = false;
   let isMinimized = false;
@@ -219,7 +232,16 @@ async function getData(getCurrencies = false) {
     "Odsetki overnight PLN": 0,
     "Łącznie netto PLN": 0,
   };
+  /*
+  _________________________________________________________________________________
+  _________________________________________________________________________________
+  */
 
+  /***********************************************************************************
+   *
+   * WIZUALIZACJA POSTĘPU POBIERANIA DANYCH
+   *
+   ***********************************************************************************/
   const updateProgress = (
     message,
     progressPercent = -1,
@@ -756,28 +778,40 @@ async function getData(getCurrencies = false) {
     }
   };
   window.addEventListener("beforeunload", beforeUnloadHandler);
+  /*
+  _________________________________________________________________________________
+  _________________________________________________________________________________
+  */
+
+  /***********************************************************************************
+   *
+   * SKRYPT POBIERANIA DANYCH Z TRADING212
+   *
+   ***********************************************************************************/
 
   /*---  POZYCJE ---*/
+  const fetchWithRetry = async (url, options, retries = 5) => {
+    for (let i = 0; i < retries; i++) {
+      const response = await fetch(url, options);
+      if (response.status === 429) {
+        const wait = Math.pow(2, i) * 1000;
+        console.warn(`Rate limit (429). Czekam ${wait}ms...`);
+        updateProgress(null, -1, `Limit zapytań (429). Czekam ${wait}ms...`);
+        await new Promise((r) => setTimeout(r, wait));
+        continue;
+      }
+      return response;
+    }
+    updateProgress(null, -1, `Przekroczono limit prób dla ${url}`);
+    throw new Error(`Przekroczono limit prób dla ${url}`);
+  };
+
   try {
     let res = await (
       await fetch(requestBase + "positions?page=1" + requestFilter, auth)
     ).json();
     const totalSize = res.totalSize || 0;
     const pageCount = Math.ceil(totalSize / 20);
-
-    const fetchWithRetry = async (url, options, retries = 5) => {
-      for (let i = 0; i < retries; i++) {
-        const response = await fetch(url, options);
-        if (response.status === 429) {
-          const wait = Math.pow(2, i) * 1000;
-          console.warn(`Rate limit (429). Czekam ${wait}ms...`);
-          await new Promise((r) => setTimeout(r, wait));
-          continue;
-        }
-        return response;
-      }
-      throw new Error(`Przekroczono limit prób dla ${url}`);
-    };
 
     for (let i = 1; i <= pageCount; i++) {
       const pageRes = await (
@@ -906,17 +940,17 @@ async function getData(getCurrencies = false) {
           `Pobrano pozycje ze strony: ${i}/${pageCount}`,
         );
       } else {
-        alert(
-          `Nie udało się pobrać odpowiedzi Trading212. Skontaktuj sie z nami wklejajac caly ponizszy komunikat:\n` +
-            JSON.stringify(pageRes),
-        );
-        return false;
+        const errorMsg = `Brak danych do pobrania. Zapisz logi i załącz je do zgłoszenia Problemu`;
+        console.error(e);
+        updateProgress(null, -1, e.toString(), errorMsg, false);
+        stopDownloadingCleanup();
+        return;
       }
     }
   } catch (e) {
-    console.error("Błąd przy pozycjach:", e);
-    const errorMsg = `Błąd przy pozycjach: ${e.toString()}`;
-    updateProgress(errorMsg, -1, errorMsg, errorMsg, false);
+    const errorMsg = `Błąd przy pozycjach. Zapisz logi i załącz je do zgłoszenia Problemu`;
+    console.error(e);
+    updateProgress(null, -1, e.toString(), errorMsg, false);
     stopDownloadingCleanup();
     return;
   }
@@ -932,8 +966,6 @@ async function getData(getCurrencies = false) {
       "$1",
     );
 
-    console.log(`DEBUG: URL odsetek to: ${interestUrl}`);
-
     while (hasNext) {
       const fetchUrl = `${interestUrl}?limit=20&olderThan=${cursor}`;
       updateProgress(
@@ -945,6 +977,11 @@ async function getData(getCurrencies = false) {
       const response = await fetch(fetchUrl, auth);
 
       if (!response.ok) {
+        updateProgress(
+          null,
+          -1,
+          `Błąd sieci: ${response.status} ${response.statusText} dla adresu: ${fetchUrl}`,
+        );
         throw new Error(
           `Błąd sieci: ${response.status} ${response.statusText} dla adresu: ${fetchUrl}`,
         );
@@ -952,7 +989,10 @@ async function getData(getCurrencies = false) {
 
       const res = await response.json();
 
-      if (!res) throw new Error("Odpowiedź API jest pusta (null/undefined).");
+      if (!res) {
+        updateProgress(null, -1, `Odpowiedź API jest pusta (null/undefined).`);
+        throw new Error("Odpowiedź API jest pusta (null/undefined).");
+      }
 
       if (!res.interests) {
         hasNext = false;
@@ -1015,11 +1055,11 @@ async function getData(getCurrencies = false) {
         hasNext = false;
       }
     }
-    console.log(`Sukces: Pobrano ${interestDetails.length} odsetek.`);
+    updateProgress(null, -1, "Sukces: Pobrano odsetki od gotówki.");
   } catch (e) {
-    console.error("Błąd przy odsetkach od gotówki:", e);
-    const errorMsg = `Błąd przy odsetkach od gotówki: ${e.toString()}`;
-    updateProgress(errorMsg, -1, errorMsg, errorMsg, false);
+    const errorMsg = `Błąd przy odsetkach od gotówki. Zapisz logi i załącz je do zgłoszenia Problemu`;
+    console.error(e);
+    updateProgress(null, -1, e.toString(), errorMsg, false);
     stopDownloadingCleanup();
     return;
   }
@@ -1075,9 +1115,9 @@ async function getData(getCurrencies = false) {
       );
     }
   } catch (e) {
-    console.error("Błąd przy opłatach:", e);
     const errorMsg = `Błąd przy opłatach overnight: ${e.toString()}`;
-    updateProgress(errorMsg, -1, errorMsg, errorMsg, false);
+    console.error(errorMsg);
+    updateProgress(null, -1, errorMsg, errorMsg, false);
     stopDownloadingCleanup();
     return;
   }
