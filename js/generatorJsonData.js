@@ -630,7 +630,7 @@ async function getData(getCurrencies = false) {
             isAutoScroll = true;
             scrollBtn.classList.remove("visible");
           }
-        }, 120);
+        }, 220);
       };
       scrollBtn.onclick = () => {
         isAutoScroll = true;
@@ -974,7 +974,9 @@ async function getData(getCurrencies = false) {
         `Pobieram odsetki (wcześniejsze od ${new Date(cursor).toISOString().split("T")[0]})`,
       );
 
-      const response = await fetch(fetchUrl, auth);
+      const response = await (
+        await fetchWithRetry(requestBase + `${fetchUrl}`, auth)
+      ).json();
 
       if (!response.ok) {
         updateProgress(
@@ -1049,8 +1051,6 @@ async function getData(getCurrencies = false) {
         if (!res.hasNext || cursor < minDate.getTime()) {
           hasNext = false;
         }
-
-        await new Promise((r) => setTimeout(r, 100));
       } else {
         hasNext = false;
       }
@@ -1070,12 +1070,15 @@ async function getData(getCurrencies = false) {
     const res = await (
       await fetch(feeUrl + "?page=1" + requestFilter, auth)
     ).json();
+
     const totalSize = res.totalSize || 0;
     const pageCount = Math.ceil(totalSize / 20);
 
     for (let i = 1; i <= pageCount; i++) {
+      const fetchUrl = `${feeUrl}?page=${i}` + requestFilter;
+
       const pageRes = await (
-        await fetch(feeUrl + `?page=${i}` + requestFilter, auth)
+        await fetchWithRetry(requestBase + `${fetchUrl}`, auth)
       ).json();
 
       if (pageRes.data) {
