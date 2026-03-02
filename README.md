@@ -55,7 +55,7 @@ Chcesz ulepszyć projekt?
 - **Użytkownicy końcowi:** Mogą bezpłatnie korzystać ze skryptu do celów prywatnych (eksport danych własnych).
 - **Ograniczenia:** Zabrania się kopiowania, redystrybucji oraz publikowania kodu źródłowego na innych stronach internetowych bez uprzedniej pisemnej lub ustnej zgody autora.
 
-Pełna treść postanowień znajduje się w pliku [LICENCE.md](LICENCE).
+Pełna treść postanowień znajduje się w pliku [LICENCE.md](LICENCE.md).
 
 ---
 
