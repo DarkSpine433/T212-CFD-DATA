@@ -559,17 +559,21 @@
       });
       const rawCode = getData.toString();
 
-      const bookmarkletCode = `javascript:(function(){(${rawCode})();})();`;
-      const encodedCode =
-        "javascript:" +
-        encodeURIComponent(bookmarkletCode.slice("javascript:".length));
+      // Usunięcie blokowych komentarzy i nowych linii, żeby skrypt zmieścił się w 1 linijce
+      let minifiedCode = rawCode
+        .replace(/\/\*[\s\S]*?\*\//g, "")
+        .replace(/\n\s*/g, " ")
+        .trim();
 
-      document.getElementById("t212-bookmarklet").href = `${encodedCode}`;
+      const bookmarkletCode = `javascript:(function(){(${minifiedCode})();})();`;
+
+      document.getElementById("t212-bookmarklet").href = bookmarkletCode;
 
       document.getElementById("raw-code-input").textContent =
         `/*${getInstruction()}*/\n\n${rawCode}\n getData()`;
+
       document.getElementById("bookmarklet-code-input").textContent =
-        `${encodedCode}`;
+        bookmarkletCode;
 
       window.copyRawCode = async function () {
         const codeText = document.getElementById("raw-code-input").textContent;
