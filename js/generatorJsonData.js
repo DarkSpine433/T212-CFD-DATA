@@ -146,7 +146,7 @@ async function getData(
   /*---  Pobieranie Konfiguracji (Asynchroniczne okno dialogowe) ---*/
   const getConfigurationFields = () => {
     return new Promise((resolve, reject) => {
-      // Jeśli wartości są podane jako argumenty do getData, nie pokazujemy formularza
+      /* Jeśli wartości są podane jako argumenty do getData, nie pokazujemy formularza */
       if (currencyPredifined && startDatePredifined && endDatePredifined) {
         resolve({
           currency: currencyPredifined.toUpperCase(),
@@ -156,7 +156,7 @@ async function getData(
         return;
       }
 
-      // Utworzenie nakładki
+      /* Utworzenie nakładki */
       const overlay = document.createElement("div");
       overlay.id = "t212-exporter-config-overlay";
       overlay.style.cssText = `
@@ -206,7 +206,7 @@ async function getData(
       overlay.appendChild(dialog);
       document.body.appendChild(overlay);
 
-      // Dodanie małych efektów hover
+      /* Dodanie małych efektów hover */
       const cancelBtn = document.getElementById("t212-cfg-cancel");
       const submitBtn = document.getElementById("t212-cfg-submit");
 
@@ -250,7 +250,7 @@ async function getData(
   };
 
   const config = await getConfigurationFields();
-  if (!config) return; // User cancelled
+  if (!config) return; /* User cancelled */
 
   if (!currencyList.includes(config.currency)) {
     alert(
