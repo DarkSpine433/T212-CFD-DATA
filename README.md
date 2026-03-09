@@ -8,7 +8,7 @@
 
 Darmowe narzędzie umożliwiające eksport szczegółowych danych transakcyjnych z konta **Trading212 CFD** do formatu JSON. Projekt rozwiązuje problem braku natywnego eksportu danych CFD na platformie, dostarczając plik gotowy do rozliczeń podatkowych (np. dla polskiego formularza **PIT-38** i popularnych kalkulatorów giełdowych).
 
-👉 **Oficjalna strona i generator skryptu:** [darkspine433.github.io/T212-CFD-DATA/](https://darkspine433.github.io/T212-CFD-DATA/)
+👉 **Oficjalna strona** [darkspine433.github.io/T212-CFD-DATA/](https://darkspine433.github.io/T212-CFD-DATA/)
 
 ---
 <img width="398" height="627" alt="T212-exporter-showcase" src="https://github.com/user-attachments/assets/b5f688aa-cf4e-4236-bfee-c73d9e8dda19" />
