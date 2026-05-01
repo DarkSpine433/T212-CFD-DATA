@@ -103,7 +103,7 @@ const langTranslations = {
     h3_developers: "For developers - automation and integrations",
 
     // Tools Section
-    tools_title: "Trading 212 Data Exporter",
+    tools_title: "Trading 212 CFD & CRYPTO Data Exporter",
     iframe_loading: "Loading application...",
     iframe_fail: "ℹ️ If the iframe doesn't load, you can",
     iframe_open_new: "open the application in a new tab",
